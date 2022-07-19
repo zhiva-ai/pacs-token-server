@@ -85,6 +85,17 @@ Setup configuration should be stored in `.env` file.
 
 #### Build the server
 
+For __Macbook M1/M2__ (any Apple Silicon chips):
+
+- Go to `./auth-server/Dockerfile`
+- change `FROM node:18-alpine` to `FROM node:18`
+
+Run: 
+```shel
+docker-compose up
+```
+
+For __everyone else__ (including macbooks with Intel chips):
 ```shell
 docker-compose up
 ```
