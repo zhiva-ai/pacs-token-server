@@ -108,6 +108,10 @@ After starting the server you should be able to access [localhost/zhiva/app/expl
 
 ### User accounts
 
+> Warning !!!
+>
+> Firefox has an issue with origin forwarding when "JavaScript code is running with enhanced privileges" which translates to "when running on not signed certificate website". This cannot be helper so please use another browser for things like generating tokens (e.g. Chrome).
+
 For every user in your system you have to generate new user account. To do this, you should access [https://localhost/auth/token](https://localhost/auth/token) and enter required fields. __Admin Password__ is the password you've entered in [Generate server settings](#generate-server-settings). At the end you'll be presented with one-off __AuthToken__.
 
 __Auth Token__ is used to sign-in user in zhiva application. You can do it by selecting __zhiva Auth__ as __Authentication Type__ in __Settings -> Servers__ inside the application. You'll be presented with two options to authenticate user. 
