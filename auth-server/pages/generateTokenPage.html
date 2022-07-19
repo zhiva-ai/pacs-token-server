@@ -1,0 +1,331 @@
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Token Form | zhiva.ai</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  </head>
+
+  <body class="flex h-screen bg-blue-900 dark:bg-gray-800">
+    <div
+      class="bg-indigo-100 dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl w-full max-w-sm m-auto"
+    >
+      <header>
+        <img class="w-20 mx-auto mb-2" src="https://zhiva.ai/logos/zhiva.png" />
+        <label class="block mb-5 text-blue-500 font-bold text-center"
+          >zhiva.ai Token</label
+        >
+      </header>
+      <form id="loginForm">
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="name"
+            >Token owner name</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="text"
+            required
+            id="name"
+            name="name"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter who should receive token
+          </p>
+        </div>
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="username"
+            >Token owner username</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="text"
+            required
+            id="username"
+            name="username"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter username
+          </p>
+        </div>
+        <div class="flex mb-2 mt-4">
+          <div class="flex items-center h-5">
+            <input id="canEditResource" name="canEditResource" aria-describedby="canEditResource-checkbox-helper" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+          </div>
+          <div class="ml-2 text-sm">
+            <label for="canEditResource" class="font-medium text-blue-900 dark:text-blue-300">Can edit PACS resources?</label>
+            <p id="canEditResource-checkbox-helper" class="text-xs font-normal text-blue-500 dark:text-blue-300">Enables user to edit data on PACS. If not checked user will have readOnly access.</p>
+          </div>
+        </div>
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="password"
+            >Admin Password</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="password"
+            required
+            id="password"
+            name="password"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter admin password
+          </p>
+        </div>
+        <p id="formError" class="text-red-700 mb-4" style="display: none">
+          There was an error processing your request, please contact service
+          administrator
+        </p>
+        <div>
+          <input
+            class="w-full bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-6 rounded"
+            type="submit"
+          />
+        </div>
+      </form>
+      <div
+        id="loading"
+        class="text-blue-800 flex flex-col items-center justify-center"
+        style="display: none"
+      >
+        <div class="flex items-center justify-center">
+          <label class="block mb-2 text-blue-500 font-bold text-center"
+            >Processing request</label
+          >
+        </div>
+        <div class="flex items-center justify-center">
+          <svg
+            class="animate-spin -ml-1 mr-3 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25 text-blue-800"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75 text-blue-400"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div
+        id="confirm"
+        class="text-blue-800 flex flex-col items-center"
+        style="display: none"
+      >
+        <label class="text-xl block mb-2 text-blue-500 font-bold text-center"
+          >Confirm your request</label
+        >
+        <p id="confirmError" class="text-black-900 mb-4 text-sm">
+          Confirmation required
+        </p>
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="user-password"
+            >User Password</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="password"
+            required
+            id="user-password"
+            name="user-password"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter new password.
+          </p>
+          <ul
+            class="list-disc text-blue-700 text-sm mt-2 pl-4"
+          >
+            <li>At least 8 characters long</li>
+            <li>At least one uppercase letter</li>
+            <li>At least one lowercase letter</li>
+            <li>At least one digit</li>
+            <li>At least one special character</li>
+          </ul>
+        </div>
+        <div class="flex justify-between pt-1">
+          <button
+            class="w-1/3 bg-red-900 hover:bg-red-700 text-white font-bold py-2 px-4 mb-6 rounded"
+            type="button"
+            id="cancelButton"
+          >
+            Cancel
+          </button>
+          <button
+            class="w-1/3 bg-blue-900 enabled:hover:bg-green-700 text-white font-bold py-2 px-4 mb-6 rounded disabled:opacity-25"
+            type="button"
+            disabled
+            id="confirmButton"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+      <div
+        id="token"
+        class="text-blue-800 flex flex-col items-center"
+        style="display: none"
+      >
+        <label class="block mb-2 text-blue-500 font-bold text-center"
+          >Your token</label
+        >
+        <textarea
+          id="token-input"
+          class="w-full p-2 mb-2 text-blue-700 form-input rounded"
+          rows="6"
+          disabled
+        >
+        </textarea>
+        <label class="block mb-2 text-blue-500 text-center"
+          >Copy this token and give it to the user. Close this tab after.</label
+        >
+      </div>
+    </div>
+    <script>
+      let strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');
+      const formElem = document.getElementById("loginForm");
+      const formErr = document.getElementById("formError");
+      const loadingElem = document.getElementById("loading");
+      const tokenElem = document.getElementById("token");
+      const tokenInput = document.getElementById("token-input");
+      const confirmElem = document.getElementById("confirm");
+      const confirmError = document.getElementById("confirmError");
+      const cancelButton = document.getElementById("cancelButton");
+      const confirmButton = document.getElementById("confirmButton");
+      const userPasswordInput = document.getElementById("user-password");
+      let currFormData = {};
+
+      formElem.addEventListener("submit", (e) => {
+        // on form submission, prevent default
+        e.preventDefault();
+
+        // construct a FormData object, which fires the formdata event
+        new FormData(formElem);
+      });
+
+      const isPasswordStrong = (password) => {
+        return strongPassword.test(password)
+      }
+
+      const handleError = (error) => {
+        if (error === "User already exists") {
+          confirmElem.style.display = "block";
+          confirmError.innerText =
+            "User with this username already exists. Creating auth token will overwrite an existing token if it exists.";
+          return;
+        }
+        if (error === "User doesn't exists") {
+          confirmElem.style.display = "block";
+          confirmError.innerText =
+            "User with this username doesn't exists, do you want to want to create it?";
+          return;
+        }
+        if (error) {
+          formErr.innerText = error;
+        }
+        formElem.style.display = "block";
+        formErr.style.display = "block";
+      };
+
+      const sendRequest = (data, recreateToken) => {
+        // submit the data via XHR
+        const areValuesValid = Object.values(data).every(
+          (el) => el.length > 0
+        );
+
+        if (recreateToken) {
+          data["createUserIfNotExists"] = true;
+        }
+
+        if (areValuesValid) {
+          formElem.style.display = "none";
+          loadingElem.style.display = "block";
+          fetchToken(data)
+            .then((res) => {
+              loadingElem.style.display = "none";
+              if (res.token) {
+                tokenElem.style.display = "block";
+                tokenInput.textContent = res.token;
+              } else {
+                handleError(res.message);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              loadingElem.style.display = "none";
+              handleError(error.message);
+            });
+        }
+      };
+
+      const fetchToken = async (data) => {
+        try {
+          const response = await fetch("/auth/generate-token", {
+            method: "POST",
+            mode: "same-origin",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(data),
+          });
+          return response.json();
+        } catch (e) {
+          console.error(e);
+          return e;
+        }
+      };
+
+      formElem.onformdata = (e) => {
+        currFormData = Array.from(e.formData.entries()).reduce(
+          (acc, [key, val]) => {
+            acc[key] = val;
+            return acc;
+          },
+          {}
+        );
+        sendRequest(currFormData);
+      };
+
+      cancelButton.onclick = () => {
+        formElem.reset();
+        confirmElem.style.display = "none";
+        formElem.style.display = "block";
+      };
+
+      confirmButton.onclick = () => {
+        sendRequest(currFormData, true);
+        confirmElem.style.display = "none";
+      };
+
+      userPasswordInput.onkeyup = (e) => {
+        currFormData["userPassword"] = e.target.value;
+        if (!isPasswordStrong(currFormData["userPassword"])) {
+          confirmButton.setAttribute('disabled', '');
+        } else {
+          confirmButton.removeAttribute('disabled');
+        }
+      };
+    </script>
+  </body>
+</html>

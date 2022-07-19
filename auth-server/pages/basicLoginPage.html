@@ -1,0 +1,244 @@
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Token Form | zhiva.ai</title>
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+  </head>
+
+  <body class="flex h-screen bg-blue-900 dark:bg-gray-800">
+    <div
+      class="bg-indigo-100 dark:bg-slate-800 rounded-lg px-6 py-8 ring-1 ring-slate-900/5 shadow-xl w-full max-w-sm m-auto"
+    >
+      <header>
+        <img class="w-20 mx-auto mb-2" src="https://zhiva.ai/logos/zhiva.png" />
+        <label class="block mb-5 text-blue-500 font-bold text-center"
+          >Login with zhiva.ai</label
+        >
+      </header>
+      <form id="loginForm">
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="username"
+            >Username</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="text"
+            required
+            id="username"
+            name="username"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter username
+          </p>
+        </div>
+        <div class="mb-2">
+          <label class="block mb-2 text-blue-500" for="password"
+            >Password</label
+          >
+          <input
+            class="peer w-full text-blue-700 form-input rounded"
+            type="password"
+            required
+            id="password"
+            name="password"
+          />
+          <p
+            class="invisible peer-invalid:visible text-red-700 font-light text-sm"
+          >
+            Please enter password
+          </p>
+        </div>
+        <p id="formError" class="text-red-700 mb-4" style="display: none">
+          There was an error processing your request, please contact service
+          administrator
+        </p>
+        <div>
+          <input
+            class="w-full bg-blue-900 hover:bg-blue-700 text-white font-bold py-2 px-4 mb-6 rounded"
+            type="submit"
+          />
+        </div>
+      </form>
+      <div
+        id="loading"
+        class="text-blue-800 flex flex-col items-center justify-center"
+        style="display: none"
+      >
+        <div class="flex items-center justify-center">
+          <label class="block mb-2 text-blue-500 font-bold text-center"
+            >Processing request</label
+          >
+        </div>
+        <div class="flex items-center justify-center">
+          <svg
+            class="animate-spin -ml-1 mr-3 h-5 w-5"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25 text-blue-800"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75 text-blue-400"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+      <div
+        id="token"
+        class="text-blue-800 flex flex-col items-center"
+        style="display: none"
+      >
+        <p class="block mb-2 text-blue-500 text-center">
+          Redirecting, please wait...
+        </p>
+      </div>
+    </div>
+    <script>
+      const formElem = document.getElementById("loginForm");
+      const formErr = document.getElementById("formError");
+      const loadingElem = document.getElementById("loading");
+      const tokenElem = document.getElementById("token");
+      const cancelButton = document.getElementById("cancelButton");
+      const confirmButton = document.getElementById("confirmButton");
+      let currFormData = {};
+
+      const url = window.location;
+      const params = new URLSearchParams(url.search);
+
+      const return_uri = params.get("return_uri");
+      const response_type = params.get("response_type");
+      const { type = "authToken", returnParams = {} } = JSON.parse(response_type);
+
+      formElem.addEventListener("submit", (e) => {
+        // on form submission, prevent default
+        e.preventDefault();
+
+        // construct a FormData object, which fires the formdata event
+        new FormData(formElem);
+      });
+
+      const handleError = (error) => {
+        if (error) {
+          formErr.innerText = error;
+        }
+        formElem.style.display = "block";
+        formErr.style.display = "block";
+      };
+
+      const redirectAcquiredToken = (token) => {
+        const resParams = {
+          token: token,
+          state: JSON.stringify({
+            context: "zhiva_auth",
+            state: "",
+            params: returnParams
+          }),
+        };
+        const parameters = new URLSearchParams(resParams).toString();
+        const genUri = `${return_uri}?${parameters}`;
+        const redirectEl = document.createElement("p");
+        const redirectLink = document.createElement("a");
+        redirectLink.href = genUri;
+        redirectLink.innerText = `this link`;
+        redirectLink.className = "font-bold underline";
+
+        redirectEl.innerText = `If your browser doesn't redirect you automatically please use `;
+        redirectEl.className = "text-center";
+        redirectEl.appendChild(redirectLink);
+        tokenElem.appendChild(redirectEl);
+
+        window.location.replace(genUri);
+      };
+
+      const sendRequest = (data, recreateToken) => {
+        // submit the data via XHR
+        const areValuesValid = Array.from(data.values()).every(
+          (el) => el.length > 0
+        );
+
+        if (recreateToken) {
+          data.append("createUserIfNotExists", true);
+        }
+
+        if (areValuesValid) {
+          formElem.style.display = "none";
+          loadingElem.style.display = "block";
+          fetchToken(Array.from(data.entries()))
+            .then((res) => {
+              loadingElem.style.display = "none";
+              if (res.token) {
+                tokenElem.style.display = "block";
+                redirectAcquiredToken(res.token);
+              } else {
+                handleError(res.message);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              loadingElem.style.display = "none";
+              handleError(error.message);
+            });
+        }
+      };
+
+      const fetchToken = async (data) => {
+        try {
+          const body = data.reduce((acc, [key, val]) => {
+            acc[key] = val;
+            return acc;
+          }, {});
+          body["referer"] =
+            document.referrer.slice(document.referrer.length - 1) === "/"
+              ? document.referrer.slice(0, document.referrer.length - 1)
+              : document.referrer;
+          const response = await fetch("/auth/sign-user", {
+            method: "POST",
+            mode: "same-origin",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(body),
+          });
+          return response.json();
+        } catch (e) {
+          console.error(e);
+          return e;
+        }
+      };
+
+      formElem.onformdata = (e) => {
+        currFormData = e.formData;
+        sendRequest(currFormData);
+      };
+
+      cancelButton.onclick = () => {
+        formElem.reset();
+        confirmElem.style.display = "none";
+        formElem.style.display = "block";
+      };
+
+      confirmButton.onclick = () => {
+        sendRequest(currFormData, true);
+        confirmElem.style.display = "none";
+      };
+    </script>
+  </body>
+</html>
