@@ -1,0 +1,9 @@
+version: '3.9'
+services:
+  zhiva_setup:
+    build: .
+    container_name: zhiva_setup
+    volumes:
+      - ../.env:/app/.env
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
