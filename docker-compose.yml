@@ -75,11 +75,11 @@ services:
       - auth-network
     volumes:
       - ./mongo/initdb.d/:/docker-entrypoint-initdb.d/
-#      - mongodb:/data/db
+      - mongodb:/data/db
     # you should not expose port outside the docker network
     # (only uncomment it if you want to connect to mongodb directly, neven in production)
-    ports:
-      - 27017:27017
+#    ports:
+#      - 27017:27017
 
 secrets:
   orthanc.json:
