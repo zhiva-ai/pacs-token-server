@@ -61,7 +61,7 @@ services:
     volumes:
       - ./jwt_priv.pem:/usr/src/app/dist/priv.pem
       - ./jwt_pub.pem:/usr/src/app/dist/pub.pem
-      - ./auth-server/dist/:/usr/src/app/dist/
+#      - ./auth-server/dist/:/usr/src/app/dist/
   mongodb:
     container_name: mongodb
     image: mongo:5.0
