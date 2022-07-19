@@ -9,7 +9,6 @@ Before we start please make sure your server has access to:
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
 - [OpenSSL](https://www.openssl.org/)
-- [python3](https://www.python.org/downloads/) (setup)
 
 ### Get the server code
 
