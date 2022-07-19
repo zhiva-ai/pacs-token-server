@@ -55,11 +55,28 @@
         </div>
         <div class="flex mb-2 mt-4">
           <div class="flex items-center h-5">
-            <input id="canEditResource" name="canEditResource" aria-describedby="canEditResource-checkbox-helper" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <input
+              id="canEditResource"
+              name="canEditResource"
+              value="true"
+              aria-describedby="canEditResource-checkbox-helper"
+              type="checkbox"
+              class="w-4 h-4 text-blue-600 bg-gray-100 rounded border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
           </div>
           <div class="ml-2 text-sm">
-            <label for="canEditResource" class="font-medium text-blue-900 dark:text-blue-300">Can edit PACS resources?</label>
-            <p id="canEditResource-checkbox-helper" class="text-xs font-normal text-blue-500 dark:text-blue-300">Enables user to edit data on PACS. If not checked user will have readOnly access.</p>
+            <label
+              for="canEditResource"
+              class="font-medium text-blue-900 dark:text-blue-300"
+              >Can edit PACS resources?</label
+            >
+            <p
+              id="canEditResource-checkbox-helper"
+              class="text-xs font-normal text-blue-500 dark:text-blue-300"
+            >
+              Enables user to edit data on PACS. If not checked user will have
+              readOnly access.
+            </p>
           </div>
         </div>
         <div class="mb-2">
@@ -150,9 +167,7 @@
           >
             Please enter new password.
           </p>
-          <ul
-            class="list-disc text-blue-700 text-sm mt-2 pl-4"
-          >
+          <ul class="list-disc text-blue-700 text-sm mt-2 pl-4">
             <li>At least 8 characters long</li>
             <li>At least one uppercase letter</li>
             <li>At least one lowercase letter</li>
@@ -199,7 +214,9 @@
       </div>
     </div>
     <script>
-      let strongPassword = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');
+      let strongPassword = new RegExp(
+        "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})"
+      );
       const formElem = document.getElementById("loginForm");
       const formErr = document.getElementById("formError");
       const loadingElem = document.getElementById("loading");
@@ -221,8 +238,8 @@
       });
 
       const isPasswordStrong = (password) => {
-        return strongPassword.test(password)
-      }
+        return strongPassword.test(password);
+      };
 
       const handleError = (error) => {
         if (error === "User already exists") {
@@ -246,9 +263,7 @@
 
       const sendRequest = (data, recreateToken) => {
         // submit the data via XHR
-        const areValuesValid = Object.values(data).every(
-          (el) => el.length > 0
-        );
+        const areValuesValid = Object.values(data).every((el) => el !== '');
 
         if (recreateToken) {
           data["createUserIfNotExists"] = true;
@@ -299,7 +314,7 @@
       formElem.onformdata = (e) => {
         currFormData = Array.from(e.formData.entries()).reduce(
           (acc, [key, val]) => {
-            acc[key] = val;
+            acc[key] = val === "true" ? true : val;
             return acc;
           },
           {}
@@ -321,9 +336,9 @@
       userPasswordInput.onkeyup = (e) => {
         currFormData["userPassword"] = e.target.value;
         if (!isPasswordStrong(currFormData["userPassword"])) {
-          confirmButton.setAttribute('disabled', '');
+          confirmButton.setAttribute("disabled", "");
         } else {
-          confirmButton.removeAttribute('disabled');
+          confirmButton.removeAttribute("disabled");
         }
       };
     </script>

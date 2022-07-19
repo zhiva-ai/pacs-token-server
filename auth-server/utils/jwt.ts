@@ -36,6 +36,7 @@ export enum TOKEN_ERROR_MESSAGES {
   INVALID_TOKEN = "Invalid Token",
   MISSING_TOKEN = "Missing Token",
   EXPIRED_TOKEN = "Token Expired",
+  UNAUTHORIZED_TOKEN = "Unauthorized",
   OTHER_ERROR = "Unexpected error",
 }
 

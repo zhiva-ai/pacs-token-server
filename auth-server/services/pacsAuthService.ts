@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { TOKEN_ERROR_MESSAGES, trimJWT, validateToken } from "../utils/jwt";
 import { User } from "../db/schemas/user";
+import { Token } from "../db/schemas/token";
 
 type AccessObj = {
   granted: boolean;
@@ -18,7 +19,7 @@ type OrthancRequestBody = {
 };
 
 async function validateAccessToken(
-  authorizationHeader: string
+  authorizationHeader: string, requestBody: OrthancRequestBody
 ): Promise<AccessObj> {
   let token = trimJWT(authorizationHeader);
 
@@ -29,9 +30,25 @@ async function validateAccessToken(
     throw Error(TOKEN_ERROR_MESSAGES.EXPIRED_TOKEN);
   }
 
+  if(!tokenPayload.canEditResource && requestBody.method !== 'get') {
+    throw Error(TOKEN_ERROR_MESSAGES.UNAUTHORIZED_TOKEN);
+  }
+
+  let selectedToken = await Token.findOne({
+    type: "access",
+    token: token,
+  });
+
   let selectedUser = await User.findOne({
     username: tokenPayload.username,
-    accessToken: token,
+    $or: [
+      {
+        authToken: token,
+      },
+      {
+        accessTokens: [selectedToken ? selectedToken._id.valueOf() : null],
+      },
+    ],
   });
 
   // Check if auth token exists in DB
@@ -50,7 +67,7 @@ export function pacsAuthService(
   response: Response<AccessObj>
 ) {
   if (request.method == "POST") {
-    validateAccessToken(request.body["token-value"])
+    validateAccessToken(request.body["token-value"], request.body)
       .then((accessObj) => {
         response.status(200);
         response.send(accessObj);

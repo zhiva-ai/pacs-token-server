@@ -95,6 +95,27 @@ After starting the server you should be able to access [localhost/zhiva/app/expl
 >
 > You might be prompted with the message about invalid SSL certificate. This is caused by using OpenSSL to generate certificate for `localhost` and that certificate has no 3rd party that confirms its authenticity. It's fine for local network but remember to use proper certificate if the server is accessible from outside your network.
 
+### User accounts
+
+For every user in your system you have to generate new user account. To do this, you should access [https://localhost/auth/token](https://localhost/auth/token) and enter required fields. __Admin Password__ is the password you've entered in [Generate server settings](#generate-server-settings). At the end you'll be presented with one-off __AuthToken__.
+
+__Auth Token__ is used to sign-in user in zhiva application. You can do it by selecting __zhiva Auth__ as __Authentication Type__ in __Settings -> Servers__ inside the application. You'll be presented with two options to authenticate user. 
+
+The first is __Token__ and this is the place when you can paste your token. After than you can validate your token.
+
+The second option is to use __Login with zhiva__ button. You have to provide likt to authentication server sign-in website. Paste `https://localhost/auth/sign-in` into the input field and click on the login button. You will be prompted for __username__ and __password__ (you've created the user a second ago). After login you'll be redirected back to the application with server already configured.
+
+### Access to orthanc explorer
+
+Because this version of the server works with tokens you have to generate one in order to access local explorer. To generate token you have to go through the proces from [https://localhost/auth/token](https://localhost/auth/token) again. At the end just copy the token and access explorer by adding this token as query parameter. Your URI should look like this:
+```bash
+https://localhost/zhiva/app/explorer.html?token=YOUR_TOKEN_HERE
+```
+
+Remember to give your token __"Can edit PACS resources?"__ access, otherwise you won't be able to modify anything on the server.
+
+This token expires in 24h or when the user uses it to login.
+
 ### Access from within internal network
 
 If you have more than one computer inside your network (or VPN connection), then you can share the server settings with them. To check the server address please run the following command:
@@ -109,7 +130,7 @@ Windows
 ipconfig
 ```
 
-and look for the setting with the `inet` value that starts with `192.168.`. That should by your address in the local network. You should be able to access the upload page from `192.168.x.x:8042/app/explorer.html`. 
+and look for the setting with the `inet` value that starts with `192.168.`. That should by your address in the local network. You should be able to access the upload page from `192.168.x.x:8042/app/explorer.html?token=XYZ`. 
 
 #### Access control settings
 
