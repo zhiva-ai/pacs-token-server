@@ -38,7 +38,7 @@ async function validateAuthToken(authorizationHeader: string, origin?: string) {
 
   let selectedUser = await User.findOne({
     username: tokenPayload.username,
-    refreshTokens: { $in: [selectedToken._id.valueOf()] },
+    refreshTokens: { $in: [selectedToken._id] },
   });
 
   // Check if refresh token is assigned to the user

@@ -46,7 +46,7 @@ async function validateAccessToken(
         authToken: token,
       },
       {
-        accessTokens: [selectedToken ? selectedToken._id.valueOf() : null],
+        accessTokens: { $in: [selectedToken ? selectedToken._id : null] },
       },
     ],
   });
