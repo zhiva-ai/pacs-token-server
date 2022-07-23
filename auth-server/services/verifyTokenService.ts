@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { trimJWT, validateToken } from "../utils/jwt";
+import {TOKEN_ERROR_CODES, TOKEN_ERROR_MESSAGES, trimJWT, validateToken} from "../utils/jwt";
 
 async function validateAccessToken(
   authorizationHeader: string,
@@ -11,6 +11,10 @@ async function validateAccessToken(
 
   if (origin !== tokenPayload.aud) {
     return false;
+  }
+
+  if (Number(tokenPayload.exp) < Math.floor(Date.now() / 1000)) {
+    throw Error(TOKEN_ERROR_MESSAGES.EXPIRED_TOKEN);
   }
 
   return true;
@@ -37,9 +41,13 @@ export function verifyTokenService(
       }
       return response.send();
     })
-    .catch((e) => {
-      console.error(e);
-      response.status(401);
-      return response.send();
+    .catch((error) => {
+      console.error(error);
+      if (Object.keys(TOKEN_ERROR_CODES).includes(error.message)) {
+        response.status(TOKEN_ERROR_CODES[error.message]);
+      } else {
+        response.status(403);
+      }
+      response.send();
     });
 }
