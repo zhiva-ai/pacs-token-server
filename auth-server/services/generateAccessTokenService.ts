@@ -43,8 +43,6 @@ export function generateAccessTokenService(
     response.status(401);
     return response.send({ message: TOKEN_ERROR_MESSAGES.MISSING_TOKEN });
   }
-  const origin = request.get("origin");
-  console.log(origin);
 
   validateAuthToken(request.headers["authorization"], request.get("origin"))
     .then(createAccessTokenGenerator(request.get("origin")))

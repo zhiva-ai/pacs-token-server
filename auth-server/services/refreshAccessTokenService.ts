@@ -27,7 +27,7 @@ async function validateAuthToken(authorizationHeader: string, origin?: string) {
 
   const tokenPayload = await validateToken(token);
 
-  if (origin !== tokenPayload.aud) {
+  if (tokenPayload.aud && origin !== tokenPayload.aud) {
     throw Error(TOKEN_ERROR_MESSAGES.INVALID_TOKEN);
   }
 

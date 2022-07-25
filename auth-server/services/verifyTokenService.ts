@@ -1,5 +1,10 @@
 import { Request, Response } from "express";
-import {TOKEN_ERROR_CODES, TOKEN_ERROR_MESSAGES, trimJWT, validateToken} from "../utils/jwt";
+import {
+  TOKEN_ERROR_CODES,
+  TOKEN_ERROR_MESSAGES,
+  trimJWT,
+  validateToken,
+} from "../utils/jwt";
 
 async function validateAccessToken(
   authorizationHeader: string,
@@ -9,7 +14,7 @@ async function validateAccessToken(
 
   const tokenPayload = await validateToken(token);
 
-  if (origin !== tokenPayload.aud) {
+  if (tokenPayload.aud && origin !== tokenPayload.aud) {
     return false;
   }
 
